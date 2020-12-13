@@ -1,0 +1,60 @@
+# celldb location
+
+celldb: /well/combat/projects/preprocess/citeseq_initial/pipeline_celldb/061720/csvdb
+
+query: >-
+  select * from final
+  where baseID like "COMB%"
+  and pct_mitochondrial <5
+  and ngenes >500;
+
+resources:
+  # memory to be used for tasks: cellSubsets,
+  # can be set to none | e.g. 40G
+  memory: none
+
+
+matrix:
+  dir: /well/combat/projects/preprocess/citeseq_initial/cellranger/10X-gex.dehop/
+  type: mm
+  # column in cell_info from db (using query above) that corresponds to the
+  # folder names in the cellranger output (=matrix_dir), this name is also used
+  # to extract the loom files below
+  name: sequencing_id
+  # suffix used for the cellranger output (not used for loom extraction), either none | suffix
+  suffix: none
+  # use the filtered|raw matrix.
+  out_type: filtered
+
+loom:
+  # whether to fetch and summarise the loom files for the selected cells, either False | True
+  fetch: False
+  dir: /well/combat/projects/preprocess/citeseq_initial/velocity
+
+# Number of cells to be randomly drawn
+# or "all"
+#
+sample: 5000
+
+
+
+
+# A tsv file containing the mapping of cells to
+# matrices with columns
+# "barcode" "matrix_id"
+cell_to_matrix_map_file: None
+
+# A tsv file containing a table describing the
+# cell matrices with columns
+# "matrix_id" "matrix_dir" "matrix_type"
+matrix_table_file: None
+
+# A tsv file containing a table with cell metadata
+# It must have a "barcode" column that corresponds
+# to the final barcodes of the output matrix
+metadata_file: None
+
+# A tsv file containing a table with qc information
+# It must have a "barcode" column that corresponds
+# to the final barcodes of the output matrix
+qcdata_file: None

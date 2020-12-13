@@ -1,0 +1,67 @@
+#
+# pipeline_cell_qc.py configuration file
+# =========================================
+#
+
+# General options
+# ---------------
+
+# Project name
+projectname: scRNAseq cell QC
+
+# Author
+author: COMBATOxford
+
+
+# compute resource options
+# ------------------------
+resources:
+    # job memory for tasks; use this in combination with nslots
+    # if no slots with memory pre-assigned; 'none' | e.g. 16G (x nslots)
+    job_memory: none
+    # number of job threads/slots
+    threads: 1
+
+
+# Calculate QC metrics
+# ------------------------
+calculate_qc_metrics:
+    # Calculate the percentage of UMIs for genesets provided ------------------------
+    # Header-less two-column tsv file with genesets to evaluate, one geneset per row.
+    # First column: name of geneset; Second column: name of the file containing the geneset.
+    # The file containing the geneset must be a header-less, one-column tsv file with gene names (one per row).")
+    # Defaults = none
+    # Eg: genesets.tsv
+    geneset_file: none
+
+    # Label cells as True/False based on whether they are part of provided lists ------------------------
+    # Header-less two-column tsv file with filenames containing list of barcodes to label, one filename per row.
+    # First column: name to identify the list, this will become the column name in the output table;
+    # Second column: name of the file containing the list of barcodes to label.
+    # Each file must contain a list of barcodes, and should have the following format:
+    # Header-less two-column tsv file with barcodes to label as 'TRUE', one barcode per row.
+    # First column: barcode name in the format UMI-1, e.g AAACCTGAGAGGTACC-1.
+    # Second column: sample or channel id name.
+    # If a barcode is included in the file, it will be labeled as 'True', otherwise as 'False'
+    # Default: none
+    # E.g: barcode_labelling.tsv
+    barcodes_to_label_as_True: none
+
+# Calculate doublet scores with scrublet
+# --------------------------------------
+scrublet:
+    # The expected fraction of transcriptomes that are doublets, typically 0.05-0.1.
+    # Results are not particularly sensitive to this parameter.
+    # https://github.com/AllonKleinLab/scrublet/blob/master/examples/scrublet_basics.ipynb
+    expected_doublet_rate: 0.06
+
+    # Subset the scrublet run to a list of 'white-listed' barcodes.
+    # For each sample this list needs to be provided in the input_samples.tsv as a column
+    # named whitelist.
+    subset: 0
+    # Additional parameters for scrublet's function 'scrub_doublets'
+    # Default parmeters from https://github.com/AllonKleinLab/scrublet/blob/master/examples/scrublet_basics.ipynb
+    min_counts: 2
+    min_cells: 3
+    min_gene_variability_pctl: 85
+    n_prin_comps: 30

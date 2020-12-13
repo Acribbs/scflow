@@ -1,0 +1,160 @@
+#
+# Pipeline pipeline_integration.py configuration file
+# ==============================================
+#
+
+# General options
+# ---------------
+
+# To run this pipeline, you need to supply a file containing
+# all samples to run with the following columns:
+# sample_id | path
+# this will be the name of the folder | this is the path to the folder containing the anndata object (name: matrix.h5ad)
+
+# Use xvfb for compilation of Rscripts
+use_xvfb: 0
+
+# compute resource options
+# ------------------------
+resources:
+    # number of slots to use for the other tasks.
+    # This is passed via job_threads and to the R scripts.
+    # One slot is assumed to have 1 CPU, 16 GB RAM
+    nslots: 2
+
+    # job memory for tasks except integration;
+    # use this in combination with nslots if no slots
+    # with memory pre-assigned; 'none' | e.g. 16G (x nslots)
+    job_memory_standard: none
+
+    # Number of slots to use for the integration task
+    # This is passed via job threads
+    # One slot is assumed to have 1 CPU, 16 GB RAM
+    integration_slots: 2
+
+    # job memory for normalisation + integration tasks;
+    # use this in combination with nslots if no slots
+    # with memory pre-assigned; 'none' | e.g. 48G (x nslots)
+    job_memory_high: none
+
+# Metadata input
+# ---------------------
+metadata:
+  # path to the metadata file (in tsv.gz format) | none
+  path: none
+  # column to use for matching between metadata file and input anndata | none
+  id_col: none
+
+
+# Regression parameters
+# ---------------------
+
+cellcycle:
+    # If lists of cell cycle genes are supplied
+    # cycle-cycle effects will be scored by the pipeline.
+    # The lists will also be used for regression if specified below.
+    #
+    # > mouse cell cycle genes >
+    #
+    # sgenes: /gfs/archive/sansom/datasets/cell_cycle/mouse/s_genes.txt
+    # g2mgenes: /gfs/archive/sansom/datasets/cell_cycle/mouse/g2m_genes.txt
+    #
+    # > human cell cycle genes >
+    #
+    # sgenes: /gfs/archive/sansom/datasets/cell_cycle/human/wang.g1-s.txt
+    # g2mgenes: /gfs/archive/sansom/datasets/cell_cycle/human/wang.g2-m.txt
+    # sgenes: /well/combat/users/nci082/work/references/s_genes.tsv
+    # g2mgenes: /well/combat/users/nci082/work/references/g2m_genes.tsv
+
+    sgenes: none
+    g2mgenes: none
+
+
+# Normalization
+# -------------
+
+regress:
+    ## Removal of unwanted variation (see Seurat::ScaleData)
+    # Latent variables to regress out, which need to be column
+    # names in the metadata (cell cycle phase does not need to be
+    # added here). If nothing should be regressed, set this to none.
+    latentvars: total_UMI
+    # Model used to regress out latent variables
+    # Choices: 'linear'|'poisson'|'negbinom'
+    modeluse: linear
+    # see http://satijalab.org/seurat/cell_cycle_vignette.html
+    # Choices: 'none'|'all'|'difference'
+    # - Use "all" to regress out all cell cycle effects.
+    # - Use "difference" to regress out the difference between G2M and S phase scores
+    # (i.e. the Alternate Workflow in the link above)
+    cellcycle: none
+
+hvg:
+    # Exclude genes in the following tsv file before finding hv genes. The number of hvg will not
+    # be affected by this. This table requires a named column gene_id for the exclusion.
+    exclude: none
+    # Number of variable features to identify. This number is only used in normalise
+    # & hvg task. If a genelist is provided in list option below, this number is ignored
+    # in the integration task.
+    # Supply a comma-separated list (no spaces) for this option
+    ngenes: 3000
+    # Whether to find highly variable genes on merged dataset
+    # or per batch. Choices: '1' | '0' , where 1 is merged hvg.
+    # Supply a comma-separated list (no spaces) for this option
+    merged: 1
+    # Genelist to use as highly-variable genes for PCA prior to integration.
+    # If this is set to none, it will use the hvg_info list from the scanpy function
+    # will be used. If set, this table requires a column gene_name and all given
+    # genes need to be included in the seurat object.
+    list: none
+
+# Integration - general
+# -------------
+
+integration:
+    # Options are: harmony | bbknn | scanorama
+    # Supply a comma-separated list (no spaces) for this option
+    tools_run: harmony
+    # Factor to use for splitting of object
+    # This has to be a column in the metadata of the input Seurat
+    # object
+    split_factor: sample_id
+    # Number of PCs to calculate (total) and the number to use.
+    # All used components will be taken forward to scanpy.neighbors and umap.
+    total_number_pcs: 100
+    # Supply a comma-separated list (no spaces) for this option
+    number_pcs: 30
+    # min distance to use for UMAP; seurat default is 0.3, scanpy is 0.5
+    umap_min_dist: 0.5
+
+# Integration - options per tool
+# -------------
+
+harmony:
+    # Width of soft kmeans clusters. Default in harmony sigma=0.1.
+    # Supply a comma-separated list (no spaces) for this option
+    sigma: 0.1
+    # theta and lambda not included here yet.
+
+qc_integration:
+    # Other columns in metadata to plot or none,
+    # The grouping variable from above is automatically added.
+    plot: none
+    # This option can be used to plot cluster_ids from downstream
+    # analyses on the UMAP. Set to 'none' or the path to a txt.gz file
+    # which has two columns named 'barcodes' and 'cluster_id'.
+    plot_clusters: none
+
+report_umap:
+  run: 0
+  # Add parameters that should be used for the summary here.
+  # Only one combination of parameters is possible.
+  # Same parameter names as specified above.
+  merged_hvg: 1
+  ngenes: 3000
+  number_pcs: 30
+  sigma: 0.1
+
+  # example summary
+  # use cluster_id to plot the clusters set in the qc_integration section.
+  summary_qc: sex,ngenes,source,pool

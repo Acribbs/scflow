@@ -7,11 +7,11 @@ library(ggplot2)
 library(optparse)
 
 option_list = list(
-  make_option(c("-i", "--input"), type="character", default="", 
-              help="input dir", metavar="character"),
-  make_option(c("-o", "--out"), type="character", default="", 
-              help="output dir name [default= %default]", metavar="character"),
-	      );
+  make_option(c("-i", "--input"), type="character", default=NA, 
+              help="input dir"),
+  make_option(c("-o", "--out"), type="character", default=NA, 
+              help="output dir name [default= %default]")
+	      )
  
 
 opt_parser = OptionParser(option_list=option_list);
@@ -39,7 +39,7 @@ qplot(bc_rank$total, bc_rank$rank, geom = "line") +
 dev.off()
 
 
-res_mat <- res_mat[, tot_counts > metadata(bc_rank)$inflection]
+res_mat <- res_mat[, tot_counts > 100]
 dim(res_mat)
 
 library(tidyverse)

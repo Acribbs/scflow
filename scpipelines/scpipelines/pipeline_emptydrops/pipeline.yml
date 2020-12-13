@@ -1,0 +1,28 @@
+#
+# Pipeline pipeline_emptydrops.py configuration file
+# ==================================================
+#
+
+# General options
+# ---------------
+
+# Copyright statement
+copyright: KIR (2015-2018)
+
+# Note on input files
+# ----------------------------------------
+## Please generate a input_samples.txt file within the pipeline run
+## directory. This file needs a column named sample_id (used for
+## folder naming) and a column named path with the path to the cellranger
+## outs/ directory.
+
+# General options for emptydrops
+# ----------------------------------------
+emptydrops:
+  # FDR to use for definition of non-empty droplet
+  # based on emptyDrops output
+  FDR: 0.001
+  # memory to use. This can be set to 'none' if only slots should be used.
+  memory: 10000M
+  # number of slots/threads to use for emptydrops
+  slots: 2

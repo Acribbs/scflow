@@ -1,0 +1,47 @@
+#
+# Pipeline pipeline_geneticdemultiplexing.py configuration file
+# ==================================================
+#
+
+# General options
+# ---------------
+
+# Project name
+project_name: P190381
+
+# Copyright statement
+copyright: copyrightstatement
+
+# Note on input files
+# ----------------------------------------
+
+
+# Options for channel demultiplexing task
+# ----------------------------------------
+channel:
+  # number of threads to use for channel parsing
+  numcpu: 2
+  # the project folder where the results of vireo, demuxlet are. By default all channels are scanned 
+  # generally smth like /well/singlecell/P*******/10X-demux
+  basedir: /well/combat/users/ypz321/testpipeline/project_dir
+  # what demultiplexing you want to parse. These are independent folders in the ${basedir} one
+  demultiplexing: demuxlet2,demuxlet,vireo
+  # just subset the plotting of specific diagnostic on some param*alg combinations.
+  subset: vireo-gtf,vireo-known,vireo-wgs
+  
+
+
+# Options for project parsing task
+# ----------------------------------------
+project:
+  # number of threads to use
+  numcpu: 1
+  # the name of the projet results folder 
+  project: P190381
+  # which channels belong to this project and you want to exclude from plots because they failed? (leave empty or NULL if you want to plot everything)
+  skipsamples: 
+  # just subset the plotting of specific diagnostic on some param*alg combinations. 
+  # can be different than the first subset specified in the per channel task
+  subset: demuxlet-gtf-0.1,demuxlet-wgs-0.1,vireo-gtf,vireo-known,vireo-wgs
+   
+

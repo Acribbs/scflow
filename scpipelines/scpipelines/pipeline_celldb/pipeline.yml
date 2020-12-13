@@ -1,0 +1,33 @@
+
+database:
+    # database name
+    url: sqlite:///./csvdb
+
+data:
+
+    # The location of the sequencing sample metadata. This containes information
+    # about the indexed, sample names, genome used, sequencing ID
+    # sequencing_info: '/ifs/projects/adam/combat_project/database_data/samples-metadata.tsv'
+    sequencing_info: /well/combat/projects/preprocess/citeseq_initial/cellranger/samples.metadata.tsv
+
+    patient_metadata: /well/combat/shared/clinicalData/basicData/CBD-CLIN-00001/Final_COMBAT_basic_clinical_data_freeze_090620.txt
+
+    # Location of the demultiplex results.channel.dir
+    # demux: /ifs/projects/adam/combat_project/database_data/results.channel.dir
+    demux: /well/combat/projects/preprocess/citeseq_initial/gendem/results.channel.dir/
+
+    # The location of the scrublet output directory
+    # scrublet:   /ifs/projects/adam/combat_project/database_data/qc/scrublet.dir
+    scrublet: /well/combat/projects/preprocess/citeseq_initial/cell_qc/scrublet.dir/
+
+    # location of the qcmetrics data directory
+    # qcmetrics: /ifs/projects/adam/combat_project/database_data/qc/qcmetrics.dir
+    qcmetrics: /well/combat/projects/preprocess/citeseq_initial/cell_qc/qcmetrics.dir/
+    
+    # Lookup table with combatid to pool
+    lookup_combatid: /well/combat/projects/preprocess/metadata/grid_and_COMBATID.tsv
+
+    adt: /well/combat/projects/preprocess/citeseq_final/adt/allcells/adtqc/ADT.qc.pipeline.DSB.dir/
+virtual:
+    # Build the database using virtual tables, if 0 then it will generate a non-virtual database 
+    active: 0

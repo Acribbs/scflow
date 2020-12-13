@@ -1,0 +1,42 @@
+#
+# Pipeline pipeline_velocity.py configuration file
+# ==================================================
+#
+
+# General options
+# ---------------
+
+# Project name
+projectname: Velocity
+
+# Copyright statement
+copyright: KIR (2015-2018)
+
+# Note on input files
+# ----------------------------------------
+## Please generate a input_samples.txt file within the pipeline run
+## directory. This file needs a column named sample_id (used for
+## folder naming), a column named path with the path to the cellranger
+## outs/ directory and a column named barcodes for each sample (can be gzipped).
+
+# General options for samtools sort
+# ----------------------------------------
+sort:
+  # Please note that both CPU and memory are set lower for the actual
+  # job submission (10 % less for memory and -1 for threads).
+  # per CPU memory in M | this is passed to samtools sort and needs to be set
+  memory: 2000M
+  # number of threads to use for sorting
+  threads: 24
+
+# General options for velocyto
+# ----------------------------------------
+velocyto:
+  # Passed to velocyto (same as used for cellranger count)
+  # e.g. for human: /gfs/mirror/genomes/10x/refdata-cellranger-GRCh38-1.2.0
+  # e.g. for mouse: /gfs/mirror/genomes/10x/refdata-cellranger-mm10-1.2.0
+  cellranger_anno:
+  # per CPU memory for velocyto in M | 'none' if only threads should be used
+  memory: 10000M
+  # number of threads to use for velocyto
+  threads: 2
